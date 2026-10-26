@@ -12,6 +12,7 @@ const WS_URL = (import.meta.env.VITE_WS_URL?.trim())
 const RECONNECT_INTERVAL = 3000;
 
 let autoReconnect = true;
+let wsConnected = false;
 
 /**
  * Custom hook for managing WebSocket connection to live telemetry stream
@@ -43,6 +44,7 @@ export function useWebSocketTelemetry(onMessage) {
       ws.onopen = () => {
         console.log("WebSocket Connected!");
         setConnected(true);
+        wsConnected = true;
       };
 
       ws.onmessage = (event) => {
@@ -96,6 +98,7 @@ export function useWebSocketTelemetry(onMessage) {
       ws.onclose = () => {
         console.log("WebSocket disconnected");
         setConnected(false);
+        wsConnected = false;
         setSenderConnected(false);
         if (autoReconnect) {
           reconnectTimeoutRef.current = setTimeout(() => {
@@ -124,6 +127,7 @@ export function useWebSocketTelemetry(onMessage) {
     }
     setConnected(false);
     setSenderConnected(false);
+    wsConnected = false;
   };
 
   const togglePersist = async () => {
@@ -173,6 +177,13 @@ export function useWebSocketTelemetry(onMessage) {
       .catch((err) => console.error("Failed to fetch DB persistence state:", err));
   }, []);
 
+  //Sends a websocket message to the backend; only sends if the websocket is open and the message is not empty and is a string.
+  const sendMessage = (message) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && message.type.trim()) {
+      wsRef.current.send(JSON.stringify(message));
+    }
+  };
+
   return {
     connected,
     senderConnected,
@@ -180,5 +191,6 @@ export function useWebSocketTelemetry(onMessage) {
     connect: connectWebSocket,
     disconnect: disconnectWebSocket,
     togglePersist,
+    sendMessage,
   };
 }

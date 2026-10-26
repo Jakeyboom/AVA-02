@@ -48,6 +48,7 @@ function LiveTelemetry() {
     connect,
     disconnect,
     togglePersist,
+    sendMessage,
   } = useWebSocketTelemetry(handleTelemetryMessage);
 
   // Sync WebSocket connection state with chart series
@@ -119,6 +120,12 @@ function LiveTelemetry() {
           >
             <span>⚙️</span>
             <span>CUSTOMIZE</span>
+          </button>
+          <button
+            className="control-btn"
+            onClick={() => sendMessage({type: "increment_lap"})}
+          >
+            <span>Increment Lap</span>
           </button>
         </div>
       </header>

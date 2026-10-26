@@ -287,12 +287,14 @@ async def websocket_endpoint(websocket: WebSocket):
             if msg.get("type") in {"lap"}:
                 global _lap
                 _lap += 1
+                logger.info("Lap incremented to %s", _lap)
 
                 lap_msg = Telemetry(
+        
                     type="telemetry",
                     timestamp_ms=int(datetime.now(UTC).timestamp() * 1000),
                     id=10,
-                    data=_lap,
+                    data=[_lap],
                 )
                 await manager.broadcast_bytes(lap_msg.SerializeToString())
 

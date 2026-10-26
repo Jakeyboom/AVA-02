@@ -123,9 +123,9 @@ function LiveTelemetry() {
           </button>
           <button
             className="control-btn"
-            onClick={() => sendMessage({type: "increment_lap"})}
+            onClick={() => sendMessage({type: "lap"})}
           >
-            <span>Increment Lap</span>
+            <span>🏃 Increment Lap</span>
           </button>
         </div>
       </header>

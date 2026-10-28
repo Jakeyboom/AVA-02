@@ -102,6 +102,12 @@ const Header = () => {
             to="/gps"
             value="/gps"
           />
+          <Tab
+            label="Professional"
+            component = {Link}
+            to="/professional"
+            value="/professional"
+            />
         </Tabs>
       </Toolbar>
     </AppBar>

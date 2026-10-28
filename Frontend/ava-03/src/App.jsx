@@ -5,6 +5,7 @@ import Header from "./Header";
 import Home from "./Home";
 import LiveTelemetry from "./LiveTelemetry/LiveTelemetry";
 import GPS from "./GPS/GPS";
+import ProfessionalView from "./Professional/ProfessionalView";
 import { TelemetryProvider } from "./Provider/TelemetryProvider";
 
 function App() {
@@ -42,31 +43,44 @@ function App() {
   }, []);
   return (
     <TelemetryProvider>
-    <Router>
-      <Header />
-      <div style={{ paddingTop: "50px" }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/analytics"
-            element={
-              <Analytics
+      <Router>
+        <Header />
+        <div style={{ paddingTop: "50px" }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/analytics"
+              element={
+                <Analytics
+                  driveList={driveList}
+                  setDriveList={setDriveList}
+                  setCachedData={setCachedData}
+                  cachedData={cachedData}
+                />
+              }
+            />
+            <Route path="/live-telemetry" element={<LiveTelemetry />} />
+            <Route path="/gps" element={<GPS />} />
+
+
+            <Route
+              path="/professional"
+              element={<ProfessionalView
                 driveList={driveList}
                 setDriveList={setDriveList}
                 setCachedData={setCachedData}
                 cachedData={cachedData}
-              />
-            }
-          />
-          <Route path="/live-telemetry" element={<LiveTelemetry />} />
-          <Route path="/gps" element={<GPS />} />
-          <Route
-            path="/*"
-            element={<p>WAKE UP!! YOU ARE LOST!! WAKE UP!! YOU ARE LOST!!</p>}
-          />
-        </Routes>
-      </div>
-    </Router>
+              />}
+            />
+
+            <Route
+              path="/*"
+              element={<p>WAKE UP!! YOU ARE LOST!! WAKE UP!! YOU ARE LOST!!</p>}
+            />
+          </Routes>
+
+        </div>
+      </Router>
     </TelemetryProvider>
   );
 }

@@ -23,6 +23,10 @@ function ChartTemplate() {
 
                 "& .MuiChartsAxis-tickLabel": {
                     fill: "white",
+                },
+
+                "& .MuiChartsAxis-tick": {
+                    stroke: "white",
                 }
             }}
             margin={{bottom: -5}}

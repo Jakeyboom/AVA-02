@@ -62,7 +62,11 @@ function ProfessionalView() {
                         <AccordionSummary>
                             Telemetry Data
                         </AccordionSummary>
-                        <AccordionDetails>
+                        <AccordionDetails
+                            sx={{
+                                height: "100%",
+                            }}
+                        >
                             <FormControl>
                                 <FormGroup>
                                     <FormControlLabel

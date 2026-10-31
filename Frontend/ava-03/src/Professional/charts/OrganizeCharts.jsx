@@ -6,7 +6,7 @@ import '../ProfessionalView.css';
 
 //This function will provide ProfessionalView with all of the charts preformatted.
 //For right now, it will just return a couple of bar charts.
-function OrganizeCharts({enabled}) {
+function OrganizeCharts({ enabled, dataSets }) {
 
     return (
         <Box className="charts-container"
@@ -15,15 +15,18 @@ function OrganizeCharts({enabled}) {
                 minWidth: 0,
                 display: "grid",
                 gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
-                gap: "1vw",
+
+                overflowY: "auto",
+
             }
-}>
-            {enabled &&<ChartTemplate />}
+            }>
             <ChartTemplate />
-            <VoltageChart />
+            <ChartTemplate />
         </Box>
     )
 
 }
+
+//Todo: Add formatting to the charts when viewing from a phone.
 
 export default OrganizeCharts;

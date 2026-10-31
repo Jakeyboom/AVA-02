@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
-import { Box, Paper, FormLabel, FormGroup, FormControl, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Paper, FormLabel, FormGroup, FormControl, FormControlLabel, Checkbox, Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import GPSMap from "./charts/GPSMap";
 import OrganizeCharts from "./charts/OrganizeCharts";
 import './ProfessionalView.css';
@@ -17,7 +17,7 @@ function ProfessionalView() {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                minHeight: "calc(100vh - 60px)",
+                minHeight: "100vh",
                 boxSizing: "border-box",
                 padding: "1vw",
                 backgroundColor: "#122625",
@@ -53,38 +53,46 @@ function ProfessionalView() {
                 <Paper
                     sx={{
                         padding: '1vw',
-                        height: '40vh'
-
+                        height: '40vh',
+                        backgroundColor: '#112b30',
+                        color: 'white',
+                        border: 'solid thin lightblue',
                     }}>
-                    <FormControl>
-                        <FormLabel component="legend">Select Data </FormLabel>
-                        <FormGroup>
-                            <FormControlLabel
-                                control={<Checkbox defaultChecked />}
-                                label="Telemetry 1"
-                                onChange={(e) => {
-                                    // Handle checkbox change
-                                    setEnabled(e.target.checked);
-                                }}
-                            />
-                            <FormControlLabel
-                                control={<Checkbox defaultChecked />}
-                                label="Telemetry 1"
-                            />
+                    <Accordion>
+                        <AccordionSummary>
+                            Telemetry Data
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <FormControl>
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={<Checkbox defaultChecked />}
+                                        label="Telemetry 1"
+                                        onChange={(e) => {
+                                            // Handle checkbox change
+                                            setEnabled(e.target.checked);
+                                        }}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox defaultChecked />}
+                                        label="Telemetry 1"
+                                    />
 
-                        </FormGroup>
-                    </FormControl>
+                                </FormGroup>
+                            </FormControl>
+                        </AccordionDetails>
+                    </Accordion>
                 </Paper>
 
 
                 <OrganizeCharts enabled={enabled} />
 
-                <Paper
+                {enabled && <Paper
                     sx={{
                         width: "40vw",
                         height: "78vh",
                         minWidth: 0,
-                        
+
                         flexShrink: 0,
                         padding: "1vw",
                         boxSizing: "border-box",
@@ -92,7 +100,7 @@ function ProfessionalView() {
                     }}
                 >
                     <GPSMap />
-                </Paper>
+                </Paper>}
             </Box>
 
 
@@ -107,18 +115,6 @@ function ProfessionalView() {
     )
 }
 
-function PopulateRows() {
-    // TODO: Implement row population logic
-    // This function will be responsible for fetching and formatting ids for the DataGrid rows based on the title of the telemetry data.  It will mainly act as a way to turn on and off the display of certain telemetry.
-    const tempRows = [{ id: 1, title: 'Telemetry 1' }, { id: 2, title: 'Telemetry 2' }]
-    return tempRows;
-}
-
-function PopulateColumns() {
-    //For all intents and purposes, this function will just be returning 1 column for now.  The column will be the title of the telemetry data.  This will be used to display the telemetry data in a table format.
-    const tempColumns = [{ field: 'title', headerName: 'Telemetry Data', width: 200 }]
-    return tempColumns;
-}
 
 export default ProfessionalView;
 

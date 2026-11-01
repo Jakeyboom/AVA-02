@@ -10,7 +10,7 @@ function ChartTemplate() {
     return (
         <Paper
         sx={{
-            height: "10vh",
+            height: "15vh",
             border: "thin solid lightblue",
             backgroundColor: "#112b30",
         }}>
@@ -19,6 +19,7 @@ function ChartTemplate() {
                 height: "100%",
                 "& .MuiChartsAxis-line": {
                     stroke: "white",
+                    strokeWidth: 2,
                 },
 
                 "& .MuiChartsAxis-tickLabel": {
@@ -27,9 +28,10 @@ function ChartTemplate() {
 
                 "& .MuiChartsAxis-tick": {
                     stroke: "white",
+                    strokeWidth: 1,
                 }
             }}
-            margin={{bottom: -5}}
+            margin={{bottom: 0}}
                 xAxis={[
                     {
                         id: 'barCategories',

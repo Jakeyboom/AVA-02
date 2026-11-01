@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { Box, Paper, FormLabel, FormGroup, FormControl, FormControlLabel, Checkbox, Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
-import GPSMap from "./charts/GPSMap";
+import GPSMap from "./charts/GPSMap"; import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import OrganizeCharts from "./charts/OrganizeCharts";
 import './ProfessionalView.css';
 
 function ProfessionalView() {
     const [timestamp, setTimestamp] = useState(1);
     const [enabled, setEnabled] = useState(true);
-
+    const id = useId();
 
     return (
+
         <Box className="professional-view"
 
             sx={{
@@ -59,7 +60,11 @@ function ProfessionalView() {
                         border: 'solid thin lightblue',
                     }}>
                     <Accordion>
-                        <AccordionSummary>
+                        <AccordionSummary
+                            expandIcon={<ArrowDownwardIcon />}
+                            aria-controls={`${id}-telemetry-panel-content`}
+                            id={`${id}-telemetry-panel-header`}
+                        >
                             Telemetry Data
                         </AccordionSummary>
                         <AccordionDetails
@@ -80,6 +85,38 @@ function ProfessionalView() {
                                     <FormControlLabel
                                         control={<Checkbox defaultChecked />}
                                         label="Telemetry 1"
+                                    />
+
+                                </FormGroup>
+                            </FormControl>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ArrowDownwardIcon />}
+                            aria-controls={`${id}-lap-panel-content`}
+                            id={`${id}-lap-panel-header`}
+                        >
+                            Choose Lap
+                        </AccordionSummary>
+                        <AccordionDetails
+                            sx={{
+                                height: "100%",
+                            }}
+                        >
+                            <FormControl>
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={<Checkbox defaultChecked />}
+                                        label="Lap 1"
+                                        onChange={(e) => {
+                                            // Handle checkbox change
+                                            setEnabled(e.target.checked);
+                                        }}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox defaultChecked />}
+                                        label="Lap 2"
                                     />
 
                                 </FormGroup>

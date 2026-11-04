@@ -1,15 +1,20 @@
-# file: livetelemetry_decoder.py
+# file: can_decoder.py
 # Author: Blake Hill
 # Desc: Helper functions for livetelemetry.py for decoding CAN data into JSON format
 
-from typing import List, Dict
-import struct
 import os
-import cantools
+import struct
 from pathlib import Path
+
+import cantools
+from cantools.database.errors import DecodeError
+
+from Backend import schemas
 from Backend.protobuf.proto.ava3_pb2 import Telemetry
 
-DEFAULT_CAN_DBC_PATH = Path(__file__).resolve().parents[1] / "candb" / "BYU_Racing_CAN.dbc"
+DEFAULT_CAN_DBC_PATH = (
+    Path(__file__).resolve().parents[1] / "candb" / "BYU_Racing_CAN.dbc"
+)
 CAN_DBC_PATH = Path(os.getenv("CAN_DBC_PATH", DEFAULT_CAN_DBC_PATH))
 CAN_DB = cantools.database.load_file(str(CAN_DBC_PATH))
 
@@ -24,10 +29,11 @@ PI_TO_SERVER_FMT = "<I I B 8s"
 
 # ========== Functions for decoding data ===========
 
-def decode_can_dbc(decoded_packet) -> tuple:
-    msg_id = decoded_packet['id']
-    msg_bytes = bytes(decoded_packet['bytes'][:decoded_packet['length']])
-    
+
+def decode_can_packet(decoded_packet) -> tuple:
+    msg_id = decoded_packet["id"]
+    msg_bytes = bytes(decoded_packet["bytes"][: decoded_packet["length"]])
+
     try:
         message = CAN_DB.get_message_by_frame_id(msg_id)
     except KeyError:
@@ -39,11 +45,41 @@ def decode_can_dbc(decoded_packet) -> tuple:
         decode_choices=False,  # Keep raw values instead of mapping to enums
         scaling=True,  # Apply scaling and offsets from DBC
     )
-    
+
     return message, signals
-        
-def convert_decoded_can_data(decoded_packet: Dict) -> Telemetry:
-    message, signals = decode_can_dbc(decoded_packet)
+
+
+def decode_drive(drive) -> dict:
+    result = schemas.Drive.model_validate(drive)
+
+    for row in result["raw_data"]:
+        try:
+            message, signals = decode_can_packet(
+                {
+                    "id": row["msg_id"],
+                    "length": len(row["raw_data"]),
+                    "bytes": row["raw_data"],
+                }
+            )
+            row["decoded_data"] = signals
+            row["decode_error"] = (
+                None if message is not None else "CAN ID not found in DBC"
+            )
+        except DecodeError as e:
+            row["decoded_data"] = {}
+            row["decode_error"] = str(e)
+            print(f"Error decoding CAN packet: {e}")
+            continue
+
+    return result
+
+
+def decode_multiple_drives(drives) -> list[dict]:
+    return [decode_drive(drive) for drive in drives]
+
+
+def convert_decoded_can_data(decoded_packet: dict) -> Telemetry:
+    message, signals = decode_can_packet(decoded_packet)
     if message is None:
         data = [float(value) for value in decoded_packet["bytes"]]
     else:
@@ -59,26 +95,20 @@ def convert_decoded_can_data(decoded_packet: Dict) -> Telemetry:
         id=decoded_packet["id"],
         data=data,
     )
-    
+
+
 # Decodes incoming raw bytes from Pi to a structured dict for JSON
-def decode_pi_to_server(payload: bytes) -> Dict:
+def decode_pi_to_server(payload: bytes) -> dict:
     if len(payload) != 17:
         raise ValueError(f"Invalid payload length: {len(payload)}")
 
-    timestamp, msg_id, length, raw_bytes = struct.unpack(
-        PI_TO_SERVER_FMT, payload
-    )
+    timestamp, msg_id, length, raw_bytes = struct.unpack(PI_TO_SERVER_FMT, payload)
 
     # Convert raw_bytes (bytes object) → list[int]
     raw_data = list(raw_bytes[:length])
-    
 
-    return {
-        "timestamp": timestamp,
-        "id": msg_id,
-        "length": length,
-        "bytes": raw_data
-    }
+    return {"timestamp": timestamp, "id": msg_id, "length": length, "bytes": raw_data}
+
 
 # uint16 little-endian decoder (for 2-byte sensor values)
 # def decode_u16_le(b: List[int], off: int = 0) -> int:
@@ -92,9 +122,11 @@ def decode_pi_to_server(payload: bytes) -> Dict:
 # def decode_u32_le(b: List[int], off: int) -> int:
 #     return int.from_bytes(bytes(b[off:off+4]), byteorder='little', signed=False)
 
+
 # Converts the decoded CAN data into expected JSON format for Frontend
-def convert_can_data(data: bytes) -> Dict:
+def convert_can_data(data: bytes) -> dict:
     return convert_decoded_can_data(decode_pi_to_server(data))
+
 
 # def convert_decoded_can_data(decoded: Dict) -> Dict:
 #     '''Convert incoming CAN data to AVA usable format
@@ -114,8 +146,8 @@ def convert_can_data(data: bytes) -> Dict:
 #     }
 #     '''
 #     msg_id = decoded["id"]
-#     b = decoded["bytes"] 
-    
+#     b = decoded["bytes"]
+
 #     if msg_id == 0: # StartSwitch
 #         data = [b[0] if b else 0]
 #     elif msg_id in [1, 2, 3]: # Throttle1, Throttle2, Brake

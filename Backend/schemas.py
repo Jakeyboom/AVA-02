@@ -48,6 +48,15 @@ class DeleteDriveRequest(BaseModel):
     password: str
 
 
+class DecodedRawData(RawData):
+    decoded_data: dict[str, int | float]  # {Signal name: value}
+    decode_error: str | None = None  # Error message if decoding fails
+
+
+class DecodedDrive(Drive):
+    raw_data: list[DecodedRawData]
+
+
 # Schema for Driver
 
 

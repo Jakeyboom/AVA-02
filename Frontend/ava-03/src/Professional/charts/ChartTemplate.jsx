@@ -16,6 +16,7 @@ function ChartTemplate() {
         }}>
             <LineChart
             sx={{
+                color: "white",
                 height: "100%",
                 "& .MuiChartsAxis-line": {
                     stroke: "white",
@@ -31,13 +32,22 @@ function ChartTemplate() {
                     strokeWidth: 1,
                 }
             }}
-            margin={{bottom: 0}}
                 xAxis={[
                     {
                         id: 'barCategories',
                         data: ['bar A', 'bar B', 'bar C'],
                         height: 28,
+                        tickLabelStyle: {
+                            fill: "white",
+                        }
                     },
+                ]}
+                yAxis={[
+                    {
+                        tickLabelStyle: {
+                            fill: "white",
+                        }
+                    }
                 ]}
                 series={[
                     {
@@ -51,3 +61,5 @@ function ChartTemplate() {
 }
 
 export default ChartTemplate;
+
+//TODO: Find what is causing the chart lines to display strangely.

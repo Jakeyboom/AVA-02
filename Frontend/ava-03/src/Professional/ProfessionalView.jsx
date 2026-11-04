@@ -4,12 +4,19 @@ import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { Box, Paper, FormLabel, FormGroup, FormControl, FormControlLabel, Checkbox, Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import GPSMap from "./charts/GPSMap"; import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import OrganizeCharts from "./charts/OrganizeCharts";
+import {fetchDrives} from "./hooks/useFetchData";
 import './ProfessionalView.css';
 
 function ProfessionalView() {
+    const [drives, setDrives] = useState([]);
     const [timestamp, setTimestamp] = useState(1);
     const [enabled, setEnabled] = useState(true);
     const id = useId();
+
+    useEffect(() => {
+        fetchDrives
+        
+    }, [fetchDrives()]);
 
     return (
 

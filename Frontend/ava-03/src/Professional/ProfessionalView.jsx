@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { Box, Paper, FormLabel, FormGroup, FormControl, FormControlLabel, Checkbox, Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import GPSMap from "./charts/GPSMap"; import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import OrganizeCharts from "./charts/OrganizeCharts";
-import {fetchDrives} from "./hooks/useFetchData";
+import fetchDrives from "./hooks/useFetchData";
 import './ProfessionalView.css';
 
 function ProfessionalView() {
@@ -14,9 +14,30 @@ function ProfessionalView() {
     const id = useId();
 
     useEffect(() => {
-        fetchDrives
-        
-    }, [fetchDrives()]);
+        let cancelled = false;
+
+        const loadDrives = async () => {
+            try {
+                const drives = await fetchDrives();
+
+                if (!cancelled) {
+                    setDrives(drives);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Error fetching drives:", error);
+                }
+            }
+        };
+
+        loadDrives();
+        console.log("Drives: ", drives);
+
+        return () => {
+            cancelled = true;
+        };
+
+    }, []);
 
     return (
 
@@ -40,8 +61,9 @@ function ProfessionalView() {
                 }}
             >
                 <select>
-                    <option>option 1</option>
-                    <option>option 2</option>
+                    {
+                        drives.map((drive) => (<option key={drive.drive_id} value={drive.drive_id}>{drive.date}</option>))
+                    }
                 </select>
             </Box>
 

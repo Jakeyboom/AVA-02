@@ -15,7 +15,7 @@ const fetchData = async (driveId) => {
         throw new Error("Drive ID is null or undefined");
     }
 
-    const dataUrl = `/api/data/${driveId}`;;
+    const dataUrl = `/api/drive/${driveId}/decoded`;;
     try {
         const response = await fetch(dataUrl);
         console.log("Response:", response);

@@ -13,19 +13,18 @@ function GPSMap({ dataSets }) {
   const [storedCoordinates, setStoredCoordinates] = useState([]);
   useEffect(() => {
     if (dataSets != null && dataSets.length > 0) {
-      console.log("GPSMap dataSets:", dataSets);
-
       //Now, lets push all the coordinates from the dataSets into the storedCoordinates array.
-      const newCoordinates = dataSets?.flatMap((dataSet) => {
-        if (dataSet?.data != null && dataSet.data.length > 0) {
-          return dataSet.data.map((item) => [item.value.lat, item.value.long, item.timestamp]);
-        }
-        return [];
+      const newCoordinates = dataSets.filter((dataSet) => {
+        return dataSet?.decoded_data != null;
+      }).map((dataSet) => {
+        return [dataSet.decoded_data.GPSLatitude, dataSet.decoded_data.GPSLongitude, dataSet.time];
       });
       if (newCoordinates != null && newCoordinates.length > 0) {
         setStoredCoordinates(newCoordinates);
       }
     }
+
+    console.log("stored coordinates: ", storedCoordinates);
   }, [dataSets]);
 
   useEffect(() => {

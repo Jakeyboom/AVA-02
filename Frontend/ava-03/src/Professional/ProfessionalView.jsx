@@ -51,7 +51,7 @@ function ProfessionalView() {
             try {
                 const data = await fetchData(selectedDrive);
                 if (!cancelled && data != null) {
-                    setTelemetryData(data);
+                    setTelemetryData(data.raw_data);
                 }
             } catch (error) {
                 if (!cancelled) {
@@ -211,7 +211,7 @@ function ProfessionalView() {
                         overflow: "hidden",
                     }}
                 >
-                    <GPSMap />
+                    <GPSMap dataSets={telemetryData.filter((data) => data?.msg_id === 9)} />
                 </Paper>}
             </Box>
 

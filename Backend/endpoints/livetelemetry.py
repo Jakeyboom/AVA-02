@@ -16,7 +16,7 @@ from Backend.protobuf.proto.ava3_pb2 import Telemetry
 
 from .. import crud, models, schemas
 from ..database import SessionLocal
-from ..services.livetelemetry_decoder import (
+from ..services.can_decoder import (
     convert_decoded_can_data,
     decode_pi_to_server,
 )

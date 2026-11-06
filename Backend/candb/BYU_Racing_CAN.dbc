@@ -1,6 +1,5 @@
 VERSION ""
 
-
 NS_ : 
 	NS_DESC_
 	CM_
@@ -34,16 +33,11 @@ NS_ :
 BS_:
 
 BU_: DCR DCF Inverter
-VAL_TABLE_ InverterCommandMode 1 "VSM Mode" 0 "CAN Mode" ;
-VAL_TABLE_ InverterActiveDischargeState 4 "Discharge Completed" 3 "Discharge Actively occurring" 2 "Performing Speed Check" 1 "Discharge Enabled, waiting" 0 "Discharge Disabled" ;
-VAL_TABLE_ SelfSensingAssistEnable 1 "Enabled" 0 "Disabled" ;
-VAL_TABLE_ InverterRunMode 1 "Speed Mode" 0 "Torque Mode" ;
-VAL_TABLE_ RelayState 5 "Relay 6 Status" 4 "Relay 5 Status" 3 "Relay 4 Status" 2 "Relay 3 Status" 1 "Relay 2 Status" 0 "Relay 1 Status" ;
-VAL_TABLE_ InverterState 12 "Internal" 11 "Internal" 10 "Internal" 9 "Idle Stop" 8 "Idle Run" 7 "Internal" 6 "Internal" 5 "Internal" 4 "Wait" 3 "Closed Loop" 2 "Open Loop" 1 "Stop" 0 "Power On" ;
-VAL_TABLE_ VSMState 15 "Recycle Power" 14 "Shutdown in Process" 7 "Blink Fault Code" 6 "Motor Running" 5 "VSM Ready" 4 "VSM Wait" 3 "Pre-charge Complete" 2 "Pre-charge Active" 1 "Pre-charge Init" 0 "VSM Start" ;
-VAL_TABLE_ Write_Success 1 "Success" 0 "Not Written" ;
-VAL_TABLE_ Read_Write 1 "Write" 0 "Read" ;
 
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_DEF_ "MultiplexExtEnabled" ENUM "No","Yes";
+BA_DEF_DEF_ "MultiplexExtEnabled" "No";
 
 BO_ 170 InternalStates: 8 Inverter
  SG_ InverterRollingCounter : 44|4@1+ (1,0) [0|15] "" Vector__XXX
@@ -182,24 +176,24 @@ BO_ 6 TireTemperature: 7 DCR
  SG_ TireTemperature_MultiPlex M : 0|8@1+ (1,0) [0|3] "" Vector__XXX
 
 BO_ 5 TireRPM: 5 DCR
- SG_ RearRight m3 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ RearLeft m2 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ FrontRight m1 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ FrontLeft m0 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
+ SG_ RearRight m3 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ RearLeft m2 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ FrontRight m1 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ FrontLeft m0 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
  SG_ TireRPM_MultiPlex M : 0|8@1+ (1,0) [0|3] "" Vector__XXX
 
 BO_ 4 RVC: 5 DCR
- SG_ Y_Rotation m4 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ Z_Rotation m5 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ X_Rotation m3 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ Z_Acceleration m2 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ Y_Acceleration m1 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
- SG_ X_Acceleration m0 : 8|32@1- (1,0) [-3.4E+38|3.4E+38] "" Vector__XXX
+ SG_ Y_Rotation m4 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ Z_Rotation m5 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ X_Rotation m3 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ Z_Acceleration m2 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ Y_Acceleration m1 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
+ SG_ X_Acceleration m0 : 8|32@1- (1,0) [-3.4e+38|3.4e+38] "" Vector__XXX
  SG_ RVC_MultiPlex M : 0|8@1+ (1,0) [0|5] "" Vector__XXX
 
 BO_ 9 GPS: 8 DCR
- SG_ GPSLatitude : 32|32@1- (1,0) [-2147483648|2147483647] "" Vector__XXX
- SG_ GPSLongitude : 0|32@1- (1,32) [-2147483616|2147483679] "" Vector__XXX
+ SG_ GPSLatitude : 32|32@1- (1e-7,0) [-2147483648|2147483647] "" Vector__XXX
+ SG_ GPSLongitude : 0|32@1- (1e-7,0) [-2147483616|2147483679] "" Vector__XXX
 
 BO_ 0 StartSwitch: 1 DCF
  SG_ StartSwitch : 0|8@1+ (1,0) [0|1] "" Vector__XXX
@@ -214,31 +208,46 @@ BO_ 3 BrakePressure: 2 DCF
  SG_ Brake : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 
+VAL_TABLE_ InverterCommandMode 0 "CAN Mode" 1 "VSM Mode" ;
+VAL_TABLE_ InverterActiveDischargeState 0 "Discharge Disabled" 1 "Discharge Enabled, waiting" 2 "Performing Speed Check" 3 "Discharge Actively occurring" 4 "Discharge Completed" ;
+VAL_TABLE_ SelfSensingAssistEnable 0 "Disabled" 1 "Enabled" ;
+VAL_TABLE_ InverterRunMode 0 "Torque Mode" 1 "Speed Mode" ;
+VAL_TABLE_ RelayState 0 "Relay 1 Status" 1 "Relay 2 Status" 2 "Relay 3 Status" 3 "Relay 4 Status" 4 "Relay 5 Status" 5 "Relay 6 Status" ;
+VAL_TABLE_ InverterState 0 "Power On" 1 "Stop" 2 "Open Loop" 3 "Closed Loop" 4 "Wait" 5 "Internal" 6 "Internal" 7 "Internal" 8 "Idle Run" 9 "Idle Stop" 10 "Internal" 11 "Internal" 12 "Internal" ;
+VAL_TABLE_ VSMState 0 "VSM Start" 1 "Pre-charge Init" 2 "Pre-charge Active" 3 "Pre-charge Complete" 4 "VSM Wait" 5 "VSM Ready" 6 "Motor Running" 7 "Blink Fault Code" 14 "Shutdown in Process" 15 "Recycle Power" ;
+VAL_TABLE_ Write_Success 0 "Not Written" 1 "Success" ;
+VAL_TABLE_ Read_Write 0 "Read" 1 "Write" ;
+
+VAL_ 170 InverterCommandMode 0 "CAN Mode" 1 "VSM Mode" ;
+VAL_ 170 InverterDischarge 0 "Discharge Disabled" 1 "Discharge Enabled, waiting" 2 "Performing Speed Check" 3 "Discharge Actively occurring" 4 "Discharge Completed" ;
+VAL_ 170 SelfSensingAssistActive 0 "Disabled" 1 "Enabled" ;
+VAL_ 170 InverterRunModeState 0 "Torque Mode" 1 "Speed Mode" ;
+VAL_ 170 RelayState 0 "Relay 1 Status" 1 "Relay 2 Status" 2 "Relay 3 Status" 3 "Relay 4 Status" 4 "Relay 5 Status" 5 "Relay 6 Status" ;
+VAL_ 170 InverterState 0 "Power On" 1 "Stop" 2 "Open Loop" 3 "Closed Loop" 4 "Wait" 5 "Internal" 6 "Internal" 7 "Internal" 8 "Idle Run" 9 "Idle Stop" 10 "Internal" 11 "Internal" 12 "Internal" ;
+VAL_ 170 VSMState 0 "VSM Start" 1 "Pre-charge Init" 2 "Pre-charge Active" 3 "Pre-charge Complete" 4 "VSM Wait" 5 "VSM Ready" 6 "Motor Running" 7 "Blink Fault Code" 14 "Shutdown in Process" 15 "Recycle Power" ;
+VAL_ 193 ParamCom_RW 0 "Read" 1 "Write" ;
+VAL_ 194 ParamResp_Success 0 "Not Written" 1 "Success" ;
 
 CM_ SG_ 1 Throttle1Position "throttle 1 pos sensor";
 CM_ SG_ 2 Throttle2Position "Throttle 2 pos sensor";
 CM_ SG_ 3 Brake "Brake sensor";
-BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
-BA_DEF_  "BusType" STRING ;
-BA_DEF_DEF_  "MultiplexExtEnabled" "No";
-BA_DEF_DEF_  "BusType" "CAN";
-VAL_ 170 InverterCommandMode 1 "VSM Mode" 0 "CAN Mode" ;
-VAL_ 170 InverterDischarge 4 "Discharge Completed" 3 "Discharge Actively occurring" 2 "Performing Speed Check" 1 "Discharge Enabled, waiting" 0 "Discharge Disabled" ;
-VAL_ 170 SelfSensingAssistActive 1 "Enabled" 0 "Disabled" ;
-VAL_ 170 InverterRunModeState 1 "Speed Mode" 0 "Torque Mode" ;
-VAL_ 170 RelayState 5 "Relay 6 Status" 4 "Relay 5 Status" 3 "Relay 4 Status" 2 "Relay 3 Status" 1 "Relay 2 Status" 0 "Relay 1 Status" ;
-VAL_ 170 InverterState 12 "Internal" 11 "Internal" 10 "Internal" 9 "Idle Stop" 8 "Idle Run" 7 "Internal" 6 "Internal" 5 "Internal" 4 "Wait" 3 "Closed Loop" 2 "Open Loop" 1 "Stop" 0 "Power On" ;
-VAL_ 170 VSMState 15 "Recycle Power" 14 "Shutdown in Process" 7 "Blink Fault Code" 6 "Motor Running" 5 "VSM Ready" 4 "VSM Wait" 3 "Pre-charge Complete" 2 "Pre-charge Active" 1 "Pre-charge Init" 0 "VSM Start" ;
-VAL_ 193 ParamCom_RW 1 "Write" 0 "Read" ;
-VAL_ 194 ParamResp_Success 1 "Success" 0 "Not Written" ;
-SIG_VALTYPE_ 5 RearRight : 1;
-SIG_VALTYPE_ 5 RearLeft : 1;
-SIG_VALTYPE_ 5 FrontRight : 1;
-SIG_VALTYPE_ 5 FrontLeft : 1;
-SIG_VALTYPE_ 4 Y_Rotation : 1;
-SIG_VALTYPE_ 4 Z_Rotation : 1;
-SIG_VALTYPE_ 4 X_Rotation : 1;
-SIG_VALTYPE_ 4 Z_Acceleration : 1;
-SIG_VALTYPE_ 4 Y_Acceleration : 1;
-SIG_VALTYPE_ 4 X_Acceleration : 1;
 
+SIG_VALTYPE_ 5 RearRight : 1;
+
+SIG_VALTYPE_ 5 RearLeft : 1;
+
+SIG_VALTYPE_ 5 FrontRight : 1;
+
+SIG_VALTYPE_ 5 FrontLeft : 1;
+
+SIG_VALTYPE_ 4 Y_Rotation : 1;
+
+SIG_VALTYPE_ 4 Z_Rotation : 1;
+
+SIG_VALTYPE_ 4 X_Rotation : 1;
+
+SIG_VALTYPE_ 4 Z_Acceleration : 1;
+
+SIG_VALTYPE_ 4 Y_Acceleration : 1;
+
+SIG_VALTYPE_ 4 X_Acceleration : 1;

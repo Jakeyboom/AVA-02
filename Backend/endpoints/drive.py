@@ -36,8 +36,8 @@ def get_drives_by_driver(driver_id: int, db: Session = Depends(get_db)):
     return drives
 
 
-@router.get("/drive/{drive_id}", response_model=schemas.Drive)
-def get_drive_by_id(drive_id: int, db: Session = Depends(get_db)):
+@router.get("/drive/{drive_id}/decoded", response_model=schemas.DecodedDrive)
+def get_decoded_drive(drive_id: int, db: Session = Depends(get_db)):
     drive = crud.get_drive(db, drive_id)
 
     if drive is None:
@@ -251,7 +251,7 @@ def create_drive(drive: schemas.DriveCreate, db: Session = Depends(get_db)):
 @router.get("/drive", response_model=list[schemas.DriveSimple])
 def get_drives(db: Session = Depends(get_db)):
     drives = crud.get_drives(db)
-    return decode_multiple_drives(drives)
+    return drives
 
 
 @router.post("/drive/{drive_id}", response_model=dict)

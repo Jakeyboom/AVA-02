@@ -50,8 +50,9 @@ def decode_can_packet(decoded_packet) -> tuple:
     return message, signals
 
 
-def decode_drive(drive) -> dict:
-    result = schemas.Drive.model_validate(drive)
+def decode_drive(drive) -> schemas.DecodedDrive:
+    result = schemas.Drive.model_validate(drive).model_dump()
+    decoded_rows = []
 
     for row in result["raw_data"]:
         try:
@@ -70,12 +71,16 @@ def decode_drive(drive) -> dict:
             row["decoded_data"] = {}
             row["decode_error"] = str(e)
             print(f"Error decoding CAN packet: {e}")
-            continue
 
-    return result
+        decoded_rows.append(row)
+
+    result["raw_data"] = decoded_rows
+
+    return schemas.DecodedDrive.model_validate(result)
 
 
-def decode_multiple_drives(drives) -> list[dict]:
+
+def decode_multiple_drives(drives) -> list[schemas.DecodedDrive]:
     return [decode_drive(drive) for drive in drives]
 
 

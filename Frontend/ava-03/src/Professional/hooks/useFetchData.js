@@ -11,7 +11,24 @@
  */
 
 const fetchData = async (driveId) => {
-    const dataUrl = "http://localhost:8000/api/" + driveId;
+    if(driveId == null) {
+        throw new Error("Drive ID is null or undefined");
+    }
+
+    const dataUrl = `/api/data/${driveId}`;;
+    try {
+        const response = await fetch(dataUrl);
+        console.log("Response:", response);
+        if(!response.ok) {
+            throw new Error(`Failed to fetch data (${response.status})`);
+        }
+        const data = await response.json();
+        console.log("Fetched data:", data);
+        return data;
+    } catch(error) {
+        console.error("Error fetching data: ", error);
+        throw error;
+    }
 }
 
 const fetchDrives = async () => {
@@ -31,4 +48,4 @@ const fetchDrives = async () => {
     }
 }
 
-export default fetchDrives;
+export { fetchDrives, fetchData };

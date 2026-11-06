@@ -1,5 +1,31 @@
 const dbDict = {
-    
+    0x0AA: "InternalStates",
+    0x0C1: "ParameterCommand",
+    0x0C2: "ParameterResponse",
+    0x0C0: "ControlCommand",
+    0x0B1: "TorqueCapability",
+    0x0B0: "HighSpeed",
+    0x0AD: "ModulationIndex",
+    0x0AC: "TorqueAndTimerInfo",
+    0x0AB: "FaultCodes",
+    0x0A9: "InternalVoltages",
+    0x0A8: "FluxInfo",
+    0x0A7: "VoltageInfo",
+    0x0A6: "CurrentInfo",
+    0x0A5: "MotorPositionInfo",
+    0x0A4: "DigitalInputStatus",
+    0x0A3: "AnalogInputVoltages",
+    0x0A2: "MotorTemps",
+    0x0A1: "ControlBoardTemps",
+    0x0A0: "InverterTemps",
+    0x006: "TireTemperature",
+    0x005: "TireRPM",
+    0x004: "RVC",
+    0x009: "GPS",
+    0x000: "StartSwitch",
+    0x001: "Throttle1Position",
+    0x002: "Throttle2Position",
+    0x003: "BrakePressure",
 }
 
 export default dbDict;

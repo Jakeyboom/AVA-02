@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useId } from "react";
+import React, { useState, useEffect, useMemo, useId } from "react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { Box, Paper, FormLabel, FormGroup, FormControl, FormControlLabel, Checkbox, Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import GPSMap from "./charts/GPSMap"; import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import OrganizeCharts from "./charts/OrganizeCharts";
-import fetchDrives from "./hooks/useFetchData";
+import { fetchDrives, fetchData } from "./hooks/useFetchData";
+
 import './ProfessionalView.css';
+import dbDict from "./util/dbDictionary"
 
 function ProfessionalView() {
     const [drives, setDrives] = useState([]);
+    const [selectedDrive, setSelectedDrive] = useState(null);
     const [timestamp, setTimestamp] = useState(1);
     const [enabled, setEnabled] = useState(true);
+    const [telemetryData, setTelemetryData] = useState([]);
     const id = useId();
 
+    //Fetches drives to populate the select dropdown.  This allows for the user to select which drive data to show.
     useEffect(() => {
         let cancelled = false;
 
@@ -39,6 +44,44 @@ function ProfessionalView() {
 
     }, []);
 
+    //This useEffect will fetch the telemetry data for the selected drive.  It will also set the telemetry tags to display from the fetched data.
+    useEffect(() => {
+        let cancelled = false;
+        const loadTelemetryData = async () => {
+            try {
+                const data = await fetchData(selectedDrive);
+                if (!cancelled && data != null) {
+                    setTelemetryData(data);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Error fetching telemetry tags:", error);
+
+                }
+            }
+        }
+
+        loadTelemetryData();
+        //This will be terrible, but I am going to make a map containing the temeletry data Ids.  This WILL set the same thing a bunch of times, but should work until I find a better implementation.
+
+
+        return () => {
+            cancelled = true;
+        };
+    }, [selectedDrive]);
+
+    const telemetryTags = useMemo(() => {
+        const uniqueIds = new Set(
+            telemetryData
+                .filter((item) => item?.msg_id != null)
+                .map((item) => item.msg_id)
+        );
+
+        return [...uniqueIds];
+    }, [telemetryData]);
+
+
+
     return (
 
         <Box className="professional-view"
@@ -60,7 +103,9 @@ function ProfessionalView() {
                     justifyContent: 'center',
                 }}
             >
-                <select>
+                <select
+                    onChange={(e) => setSelectedDrive(e.target.value)}
+                >
                     {
                         drives.map((drive) => (<option key={drive.drive_id} value={drive.drive_id}>{drive.date}</option>))
                     }
@@ -103,19 +148,16 @@ function ProfessionalView() {
                         >
                             <FormControl>
                                 <FormGroup>
-                                    <FormControlLabel
-                                        control={<Checkbox defaultChecked />}
-                                        label="Telemetry 1"
-                                        onChange={(e) => {
-                                            // Handle checkbox change
-                                            setEnabled(e.target.checked);
-                                        }}
-                                    />
-                                    <FormControlLabel
-                                        control={<Checkbox defaultChecked />}
-                                        label="Telemetry 1"
-                                    />
-
+                                    {
+                                        telemetryTags.map((tag) => (
+                                            <FormControlLabel
+                                                key={tag}
+                                                control={<Checkbox />}
+                                                label={dbDict[tag] || `CANid: ${tag}`}
+                                                checked={true}
+                                            />
+                                        ))
+                                    }
                                 </FormGroup>
                             </FormControl>
                         </AccordionDetails>

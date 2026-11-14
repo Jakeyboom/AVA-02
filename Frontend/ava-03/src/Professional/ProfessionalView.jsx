@@ -7,14 +7,13 @@ import OrganizeCharts from "./charts/OrganizeCharts";
 import { fetchDrives, fetchData } from "./hooks/useFetchData";
 
 import './ProfessionalView.css';
-import dbDict from "./util/dbDictionary"
+import {dbDict} from "./util/dbDictionary"
 
 function ProfessionalView() {
     const [drives, setDrives] = useState([]);
     const [selectedDrive, setSelectedDrive] = useState(null);
-    const [timestamp, setTimestamp] = useState(1);
-    const [enabled, setEnabled] = useState(true);
     const [telemetryData, setTelemetryData] = useState([]);
+    const [hiddenCharts, setHiddenCharts] = useState(new Set());
     const id = useId();
 
     //Fetches drives to populate the select dropdown.  This allows for the user to select which drive data to show.
@@ -80,6 +79,11 @@ function ProfessionalView() {
         return [...uniqueIds];
     }, [telemetryData]);
 
+    const enableCharts = useMemo(() => {
+        const enables = new Map(Array.from(telemetryTags, (tag) => [tag, true]));
+        return enables;
+    }, [telemetryTags]);
+
 
 
     return (
@@ -106,6 +110,7 @@ function ProfessionalView() {
                 <select
                     onChange={(e) => setSelectedDrive(e.target.value)}
                 >
+                    <option id="DefaultSelectVal" disabled="true" selected="true">Select a Drive</option>
                     {
                         drives.map((drive) => (<option key={drive.drive_id} value={drive.drive_id}>{drive.date}</option>))
                     }
@@ -149,12 +154,28 @@ function ProfessionalView() {
                             <FormControl>
                                 <FormGroup>
                                     {
-                                        telemetryTags.map((tag) => (
+                                        telemetryTags.map((tag) => ( 
                                             <FormControlLabel
                                                 key={tag}
-                                                control={<Checkbox />}
-                                                label={dbDict[tag] || `CANid: ${tag}`}
-                                                checked={true}
+                                                id={`telemetry-tag-${tag}`}
+                                                control={<Checkbox defaultChecked
+                                                    onChange={(e) => {
+                                                        const checked = e.target.checked;
+                                                        setHiddenCharts(prev => {
+                                                            const next = new Set(prev);
+
+                                                            if(checked) {
+                                                                next.delete(tag);
+                                                            } else {
+                                                                next.add(tag);
+                                                            }
+                                                            return next;
+                                                        })
+                                                    }}
+                                                />}
+                                                label={dbDict[tag] || `CANid: ${tag}`
+                                            
+                                            }
                                             />
                                         ))
                                     }
@@ -182,7 +203,6 @@ function ProfessionalView() {
                                         label="Lap 1"
                                         onChange={(e) => {
                                             // Handle checkbox change
-                                            setEnabled(e.target.checked);
                                         }}
                                     />
                                     <FormControlLabel
@@ -197,9 +217,9 @@ function ProfessionalView() {
                 </Paper>
 
 
-                <OrganizeCharts enabled={enabled} />
+                <OrganizeCharts hiddenCharts={hiddenCharts} dataSets={telemetryData} />
 
-                {enabled && <Paper
+                {!hiddenCharts.has(9) && <Paper
                     sx={{
                         width: "40vw",
                         height: "78vh",
@@ -209,9 +229,11 @@ function ProfessionalView() {
                         padding: "1vw",
                         boxSizing: "border-box",
                         overflow: "hidden",
+                        backgroundColor: "#112b30",
+                        border: "solid thin lightblue",
                     }}
                 >
-                    <GPSMap dataSets={telemetryData.filter((data) => data?.msg_id === 9)} />
+                    {<GPSMap dataSets={telemetryData.filter((data) => data?.msg_id === 9)} />}
                 </Paper>}
             </Box>
 

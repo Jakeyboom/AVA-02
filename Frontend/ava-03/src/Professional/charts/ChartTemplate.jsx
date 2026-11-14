@@ -3,11 +3,16 @@ import { LineChart, BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { infoDict, dbDict } from "../util/dbDictionary";
 import { Paper, } from '@mui/material';
+import { multiplexSignals } from "../util/dbDictionary";
 import '../ProfessionalView.css';
 
 //This function will just provide an example of a chart.
-function ChartTemplate({ telemetryData, telemetryId }) {
+function ChartTemplate({ telemetryData, telemetryId, multiplexId }) {
     const [loading, setLoading] = useState(false);
+
+    const graphLabel = (multiplexId != null) 
+    ? multiplexSignals[telemetryId]?.[multiplexId] || `Msg ${telemetryId}, s${multiplexId}` 
+    : infoDict[telemetryId] || "Telemetry Data";
 
 
     return (
@@ -33,7 +38,7 @@ function ChartTemplate({ telemetryData, telemetryId }) {
                 ]}
                 yAxis={[
                     {
-                        label: infoDict[telemetryId] || "Telemetry Data",
+                        label: graphLabel,
                         width: 70,
                         tickLabelStyle: {
                             fill: "white",

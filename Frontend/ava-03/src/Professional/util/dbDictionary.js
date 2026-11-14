@@ -58,8 +58,28 @@ const infoDict = {
     0x003: "BrakePressure",
 }
 
+const rvcSignals = {
+    0: "X_Acceleration",
+    1: "Y_Acceleration",
+    2: "Z_Acceleration",
+    3: "X_Rotation",
+    4: "Y_Rotation",
+    5: "Z_Rotation",
+};
+
+const multiplexSignals = {
+    0x004: {
+        0: "X_Acceleration",
+        1: "Y_Acceleration",
+        2: "Z_Acceleration",
+        3: "X_Rotation",
+        4: "Y_Rotation",
+        5: "Z_Rotation",
+    },
+}
 
 
-
-export  {dbDict};
-export  {infoDict};
+export { dbDict };
+export { infoDict };
+export { rvcSignals }
+export { multiplexSignals }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, } from '@mui/material';
 import VoltageChart from "./VoltageChart";
 import ChartTemplate from "./ChartTemplate";
+import { rvcSignals } from "../util/dbDictionary";
 import '../ProfessionalView.css';
 
 //This function will provide ProfessionalView with all of the charts preformatted.
@@ -60,6 +61,7 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
         }
     })
 
+    //Can id 3
     const brakePressureData = dataSets.filter((data) => data?.msg_id === 0x003).map((data) => {
         return {
             time: data?.time,
@@ -67,6 +69,15 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
             msg_id: data?.msg_id,
         }
     })
+
+    //Can id 4 (need to sort by the multiplex)
+    const xAccelerationData = getRvcData(dataSets, 0);
+    const yAccelerationData = getRvcData(dataSets, 1);
+    const zAccelerationData = getRvcData(dataSets, 2);
+    const xRotationData = getRvcData(dataSets, 3);
+    const yRotationData = getRvcData(dataSets, 4);
+    const zRotationData = getRvcData(dataSets, 5);
+
 
 
 
@@ -82,30 +93,57 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
             }
             }>
-            {!hiddenCharts.has(0x000) &&
+            {!hiddenCharts.has(0x000) && startSwitchData?.length > 0 && 
                 <ChartTemplate
                     telemetryData={startSwitchData}
                     telemetryId={0}
                 />}
 
-            {!hiddenCharts.has(0x001) &&
+            {!hiddenCharts.has(0x001) && throttle1PositionData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={throttle1PositionData}
                     telemetryId={0x001}
                 />}
 
-            {!hiddenCharts.has(0x002) &&
+            {!hiddenCharts.has(0x002) && throttle2PositionData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={throttle2PositionData}
                     telemetryId={0x002}
                 />}
 
-            {!hiddenCharts.has(0x003) &&
+            {!hiddenCharts.has(0x003) && brakePressureData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={brakePressureData}
                     telemetryId={0x003}
                 />}
 
+            {!hiddenCharts.has(0x004) && xAccelerationData?.length > 0 && 
+                <ChartTemplate
+                    telemetryData={xAccelerationData}
+                    telemetryId={0x004}
+                    multiplexId={0x000}
+                />}
+
+            {!hiddenCharts.has(0x004) && yAccelerationData.length > 0 &&
+                <ChartTemplate
+                    telemetryData={yAccelerationData}
+                    telemetryId={0x004}
+                    multiplexId={0x001}
+                />}
+
+            {!hiddenCharts.has(0x004) && zAccelerationData.length > 0 &&
+                <ChartTemplate
+                    telemetryData={zAccelerationData}
+                    telemetryId={0x004}
+                    multiplexId={0x002}
+                />}
+
+            {!hiddenCharts.has(0x004) && xRotationData.length > 0 &&
+                <ChartTemplate
+                    telemetryData={xRotationData}
+                    telemetryId={0x004}
+                    multiplexId={0x003}
+                />}
 
 
         </Box>
@@ -115,6 +153,20 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 function filterDataByMsgId(dataSets, msgId) {
     return dataSets.filter((data) => data?.msgId === msgId);
+}
+
+function getRvcData(dataSets, multiplexId) {
+    const signalName = rvcSignals[multiplexId];
+    if(signalName == null || signalName?.length === 0) {
+        return [];
+    }
+    return dataSets.filter((data) => data?.msg_id === 0x004 && data?.decoded_data?.RVC_MultiPlex === multiplexId).map((data) => {
+        return {
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id
+        }
+    })
 }
 
 //Todo: Add formatting to the charts when viewing from a phone.

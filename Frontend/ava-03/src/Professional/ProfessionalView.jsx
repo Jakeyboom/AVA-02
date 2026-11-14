@@ -133,7 +133,7 @@ function ProfessionalView() {
                 <Paper
                     sx={{
                         padding: '1vw',
-                        height: '40vh',
+                        height: '100%',
                         backgroundColor: '#112b30',
                         color: 'white',
                         border: 'solid thin lightblue',

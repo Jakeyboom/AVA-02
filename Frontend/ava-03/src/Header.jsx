@@ -103,7 +103,7 @@ const Header = () => {
             value="/gps"
           />
           <Tab
-            label="Professional"
+            label="GPS Analytics"
             component = {Link}
             to="/professional"
             value="/professional"

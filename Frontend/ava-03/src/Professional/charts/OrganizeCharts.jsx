@@ -104,6 +104,18 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const backRightTireTempMidData = getTireTempData(dataSets, 3, 1);
     const backRightTireTempOutData = getTireTempData(dataSets, 3, 2);
 
+    //Can ID 0x0A0: Inverter temps 
+
+    const inverterTempPhaseAData = getInverterTemperatureData(dataSets, "TempPhaseA");
+    const inverterTempPhaseBData = getInverterTemperatureData(dataSets, "TempPhaseB");
+    const inverterTempPhaseCData = getInverterTemperatureData(dataSets, "TempPhaseC");
+    const gateDriverTemp = getInverterTemperatureData(dataSets, "GateDriverTemp");
+
+    //Can ID 0x0A1: Control board temps
+    const rtd1TempData = getControlBoardTemperatureData(dataSets, "RTD1");
+    const rtd2TempData = getControlBoardTemperatureData(dataSets, "RTD2");
+    const rtd3TempData = getControlBoardTemperatureData(dataSets, "RTD3");
+    const controlBoardTempData = getControlBoardTemperatureData(dataSets, "ControlBoardTemp");
 
 
 
@@ -314,6 +326,64 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
                     multiplexId={0x003}
                 />}
 
+            {!hiddenCharts.has(0x0A0) && inverterTempPhaseAData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={inverterTempPhaseAData}
+                    telemetryId={0x0A0}
+                />}
+
+            {!hiddenCharts.has(0x0A0) && inverterTempPhaseBData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={inverterTempPhaseBData}
+                    telemetryId={0x0A0}
+                />}
+
+            {!hiddenCharts.has(0x0A0) && inverterTempPhaseCData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={inverterTempPhaseCData}
+                    telemetryId={0x0A0}
+                />}
+
+            {!hiddenCharts.has(0x0A0) && gateDriverTemp?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={gateDriverTemp}
+                    telemetryId={0x0A0}
+                />}
+
+            {!hiddenCharts.has(0x0A1) && rtd1TempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={rtd1TempData}
+                    telemetryId={0x0A1}
+                />}
+
+            {!hiddenCharts.has(0x0A1) && rtd2TempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={rtd2TempData}
+                    telemetryId={0x0A1}
+                />}
+
+            {!hiddenCharts.has(0x0A1) && rtd3TempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={rtd3TempData}
+                    telemetryId={0x0A1}
+                />}
+
+            {!hiddenCharts.has(0x0A1) && controlBoardTempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={controlBoardTempData}
+                    telemetryId={0x0A1}
+                />}
+
+
+
+
+
+            
+
+
+
+
+
 
 
 
@@ -394,6 +464,33 @@ function getTireTempData(dataSets, multiplexId, positionIndex) {
     })
 
 }
+
+function getInverterTemperatureData(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A0)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+}
+
+function getControlBoardTemperatureData(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A1)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+}
+
 
 //Todo: Add formatting to the charts when viewing from a phone.
 

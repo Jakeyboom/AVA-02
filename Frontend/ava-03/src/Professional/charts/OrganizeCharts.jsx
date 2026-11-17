@@ -129,6 +129,23 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const analogInput3 = getAnalogInputVoltages(dataSets, "AnalogInput3");
     const analogInput4 = getAnalogInputVoltages(dataSets, "AnalogInput4");
 
+    //Can ID: 0x0A4: Digital Input Status
+    const digitalInput8Data = getDigitalInputStatusData(dataSets, "DigitalInput8");
+    const valetModeData = getDigitalInputStatusData(dataSets, "ValetMode");
+    const startSwitchDigitalData = getDigitalInputStatusData(dataSets, "StartSwitch");
+    const ignitionSwitchData = getDigitalInputStatusData(dataSets, "IgnitionSwitch");
+    const regenDisableSwitchData = getDigitalInputStatusData(dataSets, "REGENDisableSwitch");
+    const brakeSwitchData = getDigitalInputStatusData(dataSets, "BrakeSwitch");
+    const reverseSwitchData = getDigitalInputStatusData(dataSets, "ReverseSwitch");
+    const forwardSwitchData = getDigitalInputStatusData(dataSets, "ForwardSwitch");
+
+    //Can ID: 0x0A5: Motor Position Info
+    const deltaResolverAngleData = getMotorPositionInfo(dataSets, "DeltaResolverAngle");
+    const electricalFrequencyData = getMotorPositionInfo(dataSets, "ElectricalFrequency");
+    const motorSpeedData = getMotorPositionInfo(dataSets, "MotorSpeed");
+    const motorAngleData = getMotorPositionInfo(dataSets, "MotorAngle");
+
+
 
 
 
@@ -444,6 +461,80 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+            {!hiddenCharts.has(0x0A4) && digitalInput8Data?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={digitalInput8Data}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && valetModeData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={valetModeData}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && startSwitchDigitalData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={startSwitchDigitalData}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && ignitionSwitchData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={ignitionSwitchData}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && regenDisableSwitchData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={regenDisableSwitchData}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && brakeSwitchData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={brakeSwitchData}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && reverseSwitchData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={reverseSwitchData}
+                    telemetryId={0x0A4}
+                />}
+
+            {!hiddenCharts.has(0x0A4) && forwardSwitchData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={forwardSwitchData}
+                    telemetryId={0x0A4}
+                />}
+
+
+
+
+            {!hiddenCharts.has(0x0A5) && deltaResolverAngleData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={deltaResolverAngleData}
+                    telemetryId={0x0A5}
+                />}
+
+            {!hiddenCharts.has(0x0A5) && electricalFrequencyData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={electricalFrequencyData}
+                    telemetryId={0x0A5}
+                />}
+
+            {!hiddenCharts.has(0x0A5) && motorSpeedData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={motorSpeedData}
+                    telemetryId={0x0A5}
+                />}
+
+            {!hiddenCharts.has(0x0A5) && motorAngleData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={motorAngleData}
+                    telemetryId={0x0A5}
+                />}
 
 
 
@@ -453,7 +544,32 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -591,6 +707,34 @@ function getAnalogInputVoltages(dataSets, signalName) {
             msg_id: data?.msg_id,
         }));
 }
+
+function getDigitalInputStatusData(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A4)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+}
+
+function getMotorPositionInfo(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A5)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+}
+
+
 
 
 

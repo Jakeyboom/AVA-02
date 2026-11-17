@@ -117,6 +117,12 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const rtd3TempData = getControlBoardTemperatureData(dataSets, "RTD3");
     const controlBoardTempData = getControlBoardTemperatureData(dataSets, "ControlBoardTemp");
 
+    //Can ID 0x0A2: MotorTemps
+    const torqueShudderData = getMotorTemperatureData(dataSets, "TorqueShudder");
+    const motorTempData = getMotorTemperatureData(dataSets, "MotorTemp");
+    const hostSpotTempData = getMotorTemperatureData(dataSets, "HotSpotTemp");
+    const coolantTempData = getMotorTemperatureData(dataSets, "CoolantTemp");
+
 
 
 
@@ -377,6 +383,37 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+            {!hiddenCharts.has(0x0A2) && torqueShudderData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={torqueShudderData}
+                    telemetryId={0x0A2}
+                />}
+
+            {!hiddenCharts.has(0x0A2) && motorTempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={motorTempData}
+                    telemetryId={0x0A2}
+                />}
+
+            {!hiddenCharts.has(0x0A2) && hostSpotTempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={hostSpotTempData}
+                    telemetryId={0x0A2}
+                />}
+
+            {!hiddenCharts.has(0x0A2) && coolantTempData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={coolantTempData}
+                    telemetryId={0x0A2}
+                />}
+
+
+
+
+
+
+
+
 
             
 
@@ -490,6 +527,20 @@ function getControlBoardTemperatureData(dataSets, signalName) {
             msg_id: data?.msg_id,
         }));
 }
+
+function getMotorTemperatureData(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A2)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+}
+
 
 
 //Todo: Add formatting to the charts when viewing from a phone.

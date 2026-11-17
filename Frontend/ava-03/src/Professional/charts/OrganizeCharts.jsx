@@ -165,6 +165,14 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+    //CanId: 0x0A9
+    const reference12VData = getInternalVoltagesData(dataSets, "Reference12V");
+    const reference1_5VData = getInternalVoltagesData(dataSets, "Reference1_5V");
+    const reference2_5VData = getInternalVoltagesData(dataSets, "Reference2_5V");
+    const reference5_0VData = getInternalVoltagesData(dataSets, "Reference5_0V");
+
+
+
 
 
 
@@ -634,8 +642,38 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+            {!hiddenCharts.has(0x0A9) && reference12VData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={reference12VData}
+                    telemetryId={0x0A9}
+                />}
 
-        
+            {!hiddenCharts.has(0x0A9) && reference1_5VData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={reference1_5VData}
+                    telemetryId={0x0A9}
+                />}
+
+            {!hiddenCharts.has(0x0A9) && reference2_5VData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={reference2_5VData}
+                    telemetryId={0x0A9}
+                />}
+
+            {!hiddenCharts.has(0x0A9) && reference5_0VData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={reference5_0VData}
+                    telemetryId={0x0A9}
+                />}
+
+            
+
+
+
+
+
+
+
 
 
 
@@ -877,6 +915,20 @@ function getFluxInfo(dataSets, signalName) {
     }
     return dataSets
         .filter((data) => data?.msg_id === 0x0A8)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+
+}
+
+function getInternalVoltagesData(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A9)
         .map((data) => ({
             time: data?.time,
             data: data?.decoded_data?.[signalName],

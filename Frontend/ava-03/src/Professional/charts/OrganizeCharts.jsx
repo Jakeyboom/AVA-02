@@ -145,6 +145,13 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const motorSpeedData = getMotorPositionInfo(dataSets, "MotorSpeed");
     const motorAngleData = getMotorPositionInfo(dataSets, "MotorAngle");
 
+    //Can ID: 0x0A6: Current Info
+    const dcBusCurrentData = getCurrentInfo(dataSets, "DCBusCurrent");
+    const phaseCCurrentData = getCurrentInfo(dataSets, "PhaseCCurrent");
+    const phaseBCurrentData = getCurrentInfo(dataSets, "PhaseBCurrent");
+    const phaseACurrentData = getCurrentInfo(dataSets, "PhaseACurrent");
+
+
 
 
 
@@ -539,6 +546,38 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+            {!hiddenCharts.has(0x0A6) && dcBusCurrentData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={dcBusCurrentData}
+                    telemetryId={0x0A6}
+                />}
+
+            {!hiddenCharts.has(0x0A6) && phaseACurrentData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={phaseACurrentData}
+                    telemetryId={0x0A6}
+                />}
+
+            {!hiddenCharts.has(0x0A6) && phaseBCurrentData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={phaseBCurrentData}
+                    telemetryId={0x0A6}
+                />}
+
+            {!hiddenCharts.has(0x0A6) && phaseCCurrentData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={phaseCCurrentData}
+                    telemetryId={0x0A6}
+                />}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -732,6 +771,20 @@ function getMotorPositionInfo(dataSets, signalName) {
             data: data?.decoded_data?.[signalName],
             msg_id: data?.msg_id,
         }));
+}
+
+function getCurrentInfo(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A6)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+
 }
 
 

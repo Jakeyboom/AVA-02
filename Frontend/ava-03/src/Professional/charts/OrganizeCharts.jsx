@@ -123,6 +123,13 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const hostSpotTempData = getMotorTemperatureData(dataSets, "HotSpotTemp");
     const coolantTempData = getMotorTemperatureData(dataSets, "CoolantTemp");
 
+    //Can ID 0x0A3: Analog Input Voltages
+    const analogInput1 = getAnalogInputVoltages(dataSets, "AnalogInput1");
+    const analogInput2 = getAnalogInputVoltages(dataSets, "AnalogInput2");
+    const analogInput3 = getAnalogInputVoltages(dataSets, "AnalogInput3");
+    const analogInput4 = getAnalogInputVoltages(dataSets, "AnalogInput4");
+
+
 
 
 
@@ -410,6 +417,37 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+            {!hiddenCharts.has(0x0A3) && analogInput1?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={analogInput1}
+                    telemetryId={0x0A3}
+                />}
+
+            {!hiddenCharts.has(0x0A3) && analogInput2?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={analogInput2}
+                    telemetryId={0x0A3}
+                />}
+
+            {!hiddenCharts.has(0x0A3) && analogInput3?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={analogInput3}
+                    telemetryId={0x0A3}
+                />}
+
+            {!hiddenCharts.has(0x0A3) && analogInput4?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={analogInput4}
+                    telemetryId={0x0A3}
+                />}
+
+
+
+
+
+
+
+
 
 
 
@@ -540,6 +578,20 @@ function getMotorTemperatureData(dataSets, signalName) {
             msg_id: data?.msg_id,
         }));
 }
+
+function getAnalogInputVoltages(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A3)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+}
+
 
 
 

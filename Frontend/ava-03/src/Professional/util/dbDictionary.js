@@ -76,6 +76,13 @@ const multiplexSignals = {
         4: "Y_Rotation",
         5: "Z_Rotation",
     },
+
+    0x005: {
+        0: "FrontLeft",
+        1: "FrontRight",
+        2: "RearLeft",
+        3: "RearRight",
+    },
 }
 
 

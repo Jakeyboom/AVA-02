@@ -3,6 +3,7 @@ import { Box, } from '@mui/material';
 import VoltageChart from "./VoltageChart";
 import ChartTemplate from "./ChartTemplate";
 import { rvcSignals } from "../util/dbDictionary";
+import { multiplexSignals } from "../util/dbDictionary";
 import '../ProfessionalView.css';
 
 //This function will provide ProfessionalView with all of the charts preformatted.
@@ -78,6 +79,35 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const yRotationData = getRvcData(dataSets, 4);
     const zRotationData = getRvcData(dataSets, 5);
 
+    //Can id 5 (probably need to sort by multiplex)
+    const frontLeftTireRPMData = getTireRpmData(dataSets, 0);
+    const frontRightTireRPMData = getTireRpmData(dataSets, 1);
+    const rearLeftTireRPMData = getTireRpmData(dataSets, 2);
+    const rearRightTireRPMData = getTireRpmData(dataSets, 3);
+
+    //Can id 6 (most likely a multiplexed signal)
+    const frontLeftTireTempInData = getTireTempData(dataSets, 0, 0);
+    const frontLeftTireTempMidData = getTireTempData(dataSets, 0, 1);
+    const frontLeftTireTempOutData = getTireTempData(dataSets, 0, 2);
+
+
+
+    const frontRightTireTempInData = getTireTempData(dataSets, 1, 0);
+    const frontRightTireTempMidData = getTireTempData(dataSets, 1, 1);
+    const frontRightTireTempOutData = getTireTempData(dataSets, 1, 2);
+
+    const backLeftTireTempInData = getTireTempData(dataSets, 2, 0);
+    const backLeftTireTempMidData = getTireTempData(dataSets, 2, 1);
+    const backLeftTireTempOutData = getTireTempData(dataSets, 2, 2);
+
+    const backRightTireTempInData = getTireTempData(dataSets, 3, 0);
+    const backRightTireTempMidData = getTireTempData(dataSets, 3, 1);
+    const backRightTireTempOutData = getTireTempData(dataSets, 3, 2);
+
+
+
+
+
 
 
 
@@ -93,7 +123,7 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
             }
             }>
-            {!hiddenCharts.has(0x000) && startSwitchData?.length > 0 && 
+            {!hiddenCharts.has(0x000) && startSwitchData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={startSwitchData}
                     telemetryId={0}
@@ -117,33 +147,183 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
                     telemetryId={0x003}
                 />}
 
-            {!hiddenCharts.has(0x004) && xAccelerationData?.length > 0 && 
+            {!hiddenCharts.has(0x004) && xAccelerationData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={xAccelerationData}
                     telemetryId={0x004}
                     multiplexId={0x000}
                 />}
 
-            {!hiddenCharts.has(0x004) && yAccelerationData.length > 0 &&
+            {!hiddenCharts.has(0x004) && yAccelerationData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={yAccelerationData}
                     telemetryId={0x004}
                     multiplexId={0x001}
                 />}
 
-            {!hiddenCharts.has(0x004) && zAccelerationData.length > 0 &&
+            {!hiddenCharts.has(0x004) && zAccelerationData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={zAccelerationData}
                     telemetryId={0x004}
                     multiplexId={0x002}
                 />}
 
-            {!hiddenCharts.has(0x004) && xRotationData.length > 0 &&
+            {!hiddenCharts.has(0x004) && xRotationData?.length > 0 &&
                 <ChartTemplate
                     telemetryData={xRotationData}
                     telemetryId={0x004}
                     multiplexId={0x003}
                 />}
+
+            {!hiddenCharts.has(0x004) && yRotationData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={yRotationData}
+                    telemetryId={0x004}
+                    multiplexId={0x004}
+                />}
+
+            {!hiddenCharts.has(0x004) && zRotationData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={zRotationData}
+                    telemetryId={0x004}
+                    multiplexId={0x005}
+                />}
+
+            {!hiddenCharts.has(0x005) && frontLeftTireRPMData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontLeftTireRPMData}
+                    telemetryId={0x005}
+                    multiplexId={0x000}
+
+                />}
+
+            {!hiddenCharts.has(0x005) && frontRightTireRPMData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontRightTireRPMData}
+                    telemetryId={0x005}
+                    multiplexId={0x001}
+
+                />}
+
+            {!hiddenCharts.has(0x005) && rearLeftTireRPMData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={rearLeftTireRPMData}
+                    telemetryId={0x005}
+                    multiplexId={0x002}
+
+                />}
+
+            {!hiddenCharts.has(0x005) && rearRightTireRPMData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={rearRightTireRPMData}
+                    telemetryId={0x005}
+                    multiplexId={0x003}
+
+                />}
+
+            {!hiddenCharts.has(0x006) && frontLeftTireTempInData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontLeftTireTempInData}
+                    telemetryId={0x006}
+                    multiplexId={0x000}
+                />}
+
+            {!hiddenCharts.has(0x006) && frontLeftTireTempMidData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontLeftTireTempMidData}
+                    telemetryId={0x006}
+                    multiplexId={0x000}
+                />}
+
+            {!hiddenCharts.has(0x006) && frontLeftTireTempOutData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontLeftTireTempOutData}
+                    telemetryId={0x006}
+                    multiplexId={0x000}
+                />}
+
+
+
+            {!hiddenCharts.has(0x006) &&
+                frontRightTireTempInData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontRightTireTempInData}
+                    telemetryId={0x006}
+                    multiplexId={0x001}
+                />}
+
+            {!hiddenCharts.has(0x006) &&
+                frontRightTireTempMidData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontRightTireTempMidData}
+                    telemetryId={0x006}
+                    multiplexId={0x001}
+                />}
+
+            {!hiddenCharts.has(0x006) &&
+                frontRightTireTempOutData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={frontRightTireTempOutData}
+                    telemetryId={0x006}
+                    multiplexId={0x001}
+                />}
+
+
+
+            {!hiddenCharts.has(0x006) && backLeftTireTempInData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={backLeftTireTempInData}
+                    telemetryId={0x006}
+                    multiplexId={0x002}
+                />}
+
+            {!hiddenCharts.has(0x006) && backLeftTireTempMidData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={backLeftTireTempMidData}
+                    telemetryId={0x006}
+                    multiplexId={0x002}
+                />}
+
+            {!hiddenCharts.has(0x006) && backLeftTireTempOutData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={backLeftTireTempOutData}
+                    telemetryId={0x006}
+                    multiplexId={0x002}
+                />}
+
+
+
+            {!hiddenCharts.has(0x006) && backRightTireTempInData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={backRightTireTempInData}
+                    telemetryId={0x006}
+                    multiplexId={0x003}
+                />}
+
+            {!hiddenCharts.has(0x006) && backRightTireTempMidData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={backRightTireTempMidData}
+                    telemetryId={0x006}
+                    multiplexId={0x003}
+                />}
+
+            {!hiddenCharts.has(0x006) && backRightTireTempOutData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={backRightTireTempOutData}
+                    telemetryId={0x006}
+                    multiplexId={0x003}
+                />}
+
+
+
+
+
+
+
+
+
+
+
 
 
         </Box>
@@ -151,13 +331,9 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 }
 
-function filterDataByMsgId(dataSets, msgId) {
-    return dataSets.filter((data) => data?.msgId === msgId);
-}
-
 function getRvcData(dataSets, multiplexId) {
     const signalName = rvcSignals[multiplexId];
-    if(signalName == null || signalName?.length === 0) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
         return [];
     }
     return dataSets.filter((data) => data?.msg_id === 0x004 && data?.decoded_data?.RVC_MultiPlex === multiplexId).map((data) => {
@@ -167,6 +343,56 @@ function getRvcData(dataSets, multiplexId) {
             msg_id: data?.msg_id
         }
     })
+}
+
+function getTireRpmData(dataSets, multiplexId) {
+    const signalName = multiplexSignals[0x005]?.[multiplexId];
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+
+    return dataSets.filter((data) => data?.msg_id === 0x005 && data?.decoded_data?.TireRPM_MultiPlex === multiplexId).map((data) => {
+        return {
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id
+        }
+    })
+
+}
+
+function getTireTempData(dataSets, multiplexId, positionIndex) {
+    const signalComponentMap = {
+        0: "FrontLeft",
+        1: "FrontRight",
+        2: "RearLeft",
+        3: "RearRight",
+    }
+
+    const positionMap = {
+        0: "_Temp_In",
+        1: "_Temp_Mid",
+        2: "_Temp_Out",
+    };
+
+
+    const signalComponent = signalComponentMap[multiplexId];
+    const positionSuffix = positionMap[positionIndex];
+    if (typeof signalComponent !== "string" || typeof positionSuffix !== "string") {
+        return [];
+    }
+
+
+    const signalName = signalComponent + positionSuffix;
+    return dataSets.filter((data) => data?.msg_id === 0x006 && data?.decoded_data?.TireTemperature_MultiPlex === multiplexId).map((data) => {
+        return {
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+            multiplex_id: multiplexId,
+        }
+    })
+
 }
 
 //Todo: Add formatting to the charts when viewing from a phone.

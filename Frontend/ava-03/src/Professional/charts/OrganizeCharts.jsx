@@ -157,6 +157,11 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const outputVoltageData = getVoltageInfo(dataSets, "OutputVoltage");
     const dcBusVoltageData = getVoltageInfo(dataSets, "DCBusVoltage");
 
+    //Can ID: 0x0A8
+    const iqFeedbackData = getFluxInfo(dataSets, "IqFeedback");
+    const idFeedbackData = getFluxInfo(dataSets, "IdFeedback");
+    const fluxFeedbackData = getFluxInfo(dataSets, "FluxFeedback");
+    const fluxCommandData = getFluxInfo(dataSets, "FluxCommand");
 
 
 
@@ -602,6 +607,38 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
 
 
 
+            {!hiddenCharts.has(0x0A8) && iqFeedbackData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={iqFeedbackData}
+                    telemetryId={0x0A8}
+                />}
+
+            {!hiddenCharts.has(0x0A8) && idFeedbackData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={idFeedbackData}
+                    telemetryId={0x0A8}
+                />}
+
+            {!hiddenCharts.has(0x0A8) && fluxFeedbackData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={fluxFeedbackData}
+                    telemetryId={0x0A8}
+                />}
+
+            {!hiddenCharts.has(0x0A8) && fluxCommandData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={fluxCommandData}
+                    telemetryId={0x0A8}
+                />}
+
+
+
+
+
+        
+
+
+
 
 
 
@@ -833,6 +870,21 @@ function getVoltageInfo(dataSets, signalName) {
         }));
 
 }
+
+function getFluxInfo(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A8)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+
+}
+
 
 
 

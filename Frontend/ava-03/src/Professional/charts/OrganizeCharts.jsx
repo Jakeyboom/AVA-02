@@ -151,6 +151,12 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
     const phaseBCurrentData = getCurrentInfo(dataSets, "PhaseBCurrent");
     const phaseACurrentData = getCurrentInfo(dataSets, "PhaseACurrent");
 
+    //Can ID: 0x0A7: Voltage Info
+    const vbcVoltageData = getVoltageInfo(dataSets, "VBC_Voltage");
+    const vabVoltageData = getVoltageInfo(dataSets, "VAB_Voltage");
+    const outputVoltageData = getVoltageInfo(dataSets, "OutputVoltage");
+    const dcBusVoltageData = getVoltageInfo(dataSets, "DCBusVoltage");
+
 
 
 
@@ -570,6 +576,33 @@ function OrganizeCharts({ hiddenCharts, dataSets }) {
                     telemetryId={0x0A6}
                 />}
 
+            {!hiddenCharts.has(0x0A7) && vabVoltageData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={vabVoltageData}
+                    telemetryId={0x0A7}
+                />}
+
+            {!hiddenCharts.has(0x0A7) && vbcVoltageData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={vbcVoltageData}
+                    telemetryId={0x0A7}
+                />}
+
+            {!hiddenCharts.has(0x0A7) && outputVoltageData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={outputVoltageData}
+                    telemetryId={0x0A7}
+                />}
+
+            {!hiddenCharts.has(0x0A7) && dcBusVoltageData?.length > 0 &&
+                <ChartTemplate
+                    telemetryData={dcBusVoltageData}
+                    telemetryId={0x0A7}
+                />}
+
+
+
+
 
 
 
@@ -787,6 +820,19 @@ function getCurrentInfo(dataSets, signalName) {
 
 }
 
+function getVoltageInfo(dataSets, signalName) {
+    if (typeof signalName !== "string" || signalName.length === 0) {
+        return [];
+    }
+    return dataSets
+        .filter((data) => data?.msg_id === 0x0A7)
+        .map((data) => ({
+            time: data?.time,
+            data: data?.decoded_data?.[signalName],
+            msg_id: data?.msg_id,
+        }));
+
+}
 
 
 
